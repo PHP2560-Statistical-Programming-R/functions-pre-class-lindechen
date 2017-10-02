@@ -259,7 +259,7 @@ wcgs &lt;- read.dta(&quot;https://drive.google.com/uc?export=download&amp;id=0B8
 <h3>Question 1: Standardize Function</h3>
 <p>A. Create a function called standardize.me() that takes a numeric vector as an argument, and returns the standardized version of the vector.</p>
 <pre class="r"><code>standardize.me = function(x) {
-  (x-mean(x)) / sd(x)
+  (x-mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
 }</code></pre>
 <p>B. Assign all the numeric columns of the original WCGS dataset to a new dataset called WCGS.new.</p>
 <pre class="r"><code>WCGS.new = wcgs[c(&quot;age&quot;, &quot;height&quot;, &quot;weight&quot;, &quot;sbp&quot;, &quot;dbp&quot;, &quot;chol&quot;, &quot;ncigs&quot;, &quot;time169&quot;, &quot;bmi&quot;, &quot;agecat&quot;)]</code></pre>
@@ -273,12 +273,19 @@ wcgs &lt;- read.dta(&quot;https://drive.google.com/uc?export=download&amp;id=0B8
 
 for (i in 1:ncol(WCGS.new)) {
   mu_WCGS.new[i] = mean(WCGS.new[[i]], na.rm = TRUE)
-}</code></pre>
+}
+
+print(mu_WCGS.new)</code></pre>
+<pre><code>##  [1] -4.236965e-18  2.701606e-15 -2.713929e-16 -5.294856e-16  3.084899e-17
+##  [6]  2.812605e-16  6.351953e-17 -1.567994e-16 -3.785916e-16 -7.799602e-17</code></pre>
 <pre class="r"><code>sd_WCGS.new = c()
 
 for (i in 1:ncol(WCGS.new)) {
   sd_WCGS.new[i] = sd(WCGS.new[[i]], na.rm = TRUE)
-}</code></pre>
+}
+
+print(sd_WCGS.new)</code></pre>
+<pre><code>##  [1] 1 1 1 1 1 1 1 1 1 1</code></pre>
 </div>
 <div id="question-2-looping-to-calculate" class="section level3">
 <h3>Question 2: Looping to Calculate</h3>

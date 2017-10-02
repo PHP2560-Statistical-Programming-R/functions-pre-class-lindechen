@@ -89,7 +89,7 @@ A. Create a function called standardize.me() that takes a numeric vector as an a
 
 ```{r}
 standardize.me = function(x) {
-  (x-mean(x)) / sd(x)
+  (x-mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
 }
 ```
 
@@ -117,6 +117,8 @@ mu_WCGS.new = c()
 for (i in 1:ncol(WCGS.new)) {
   mu_WCGS.new[i] = mean(WCGS.new[[i]], na.rm = TRUE)
 }
+
+print(mu_WCGS.new)
 ```
 
 ```{r}
@@ -125,6 +127,8 @@ sd_WCGS.new = c()
 for (i in 1:ncol(WCGS.new)) {
   sd_WCGS.new[i] = sd(WCGS.new[[i]], na.rm = TRUE)
 }
+
+print(sd_WCGS.new)
 ```
 
 ### Question 2: Looping to Calculate
