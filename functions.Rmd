@@ -1,6 +1,6 @@
 ---
 title: "Functions - Pre-Class Work"
-author: "Adam J Sullivan"
+author: "Linde Chen"
 date: "September 29, 2017"
 output: html_document
 ---
@@ -10,22 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-
-
-
-
-
-
 Standardizing a variable means subtracting the mean, and then dividing by the standard deviation. Let’s use a loop to standardize the numeric columns in the [Western Collaborative Group Study](https://clinicaltrials.gov/ct2/show/NCT00005174). This study began in 1960 with 3154 men ages 39-59, who were employed in one of 11 California based companies. They were followed until 1969 during this time, 257 of these men developed coronary heart disease (CHD). You can read this data in with the code below. You can access this dataset with the following code:
 
 ```{R}
-
 suppressMessages(library(foreign))
 wcgs <- read.dta("https://drive.google.com/uc?export=download&id=0B8CsRLdwqzbzYWxfN3ExQllBQkU")
 ```
 
 The data has the following variables:
-
 
 
 WCGS has the following variables:
@@ -91,20 +83,85 @@ bmi     Body Mass Index
 -----------------------------------------------------------
 
 
-
-
 ### Question 1: Standardize Function
 
 A. Create a function called standardize.me() that takes a numeric vector as an argument, and returns the standardized version of the vector. 
+
+```{r}
+standardize.me = function(x) {
+  (x-mean(x)) / sd(x)
+}
+```
+
 B. Assign all the numeric columns of the original WCGS dataset to a new dataset called WCGS.new.
+
+```{r}
+WCGS.new = wcgs[c("age", "height", "weight", "sbp", "dbp", "chol", "ncigs", "time169", "bmi", "agecat")]
+```
+
 C. Using a loop and your new function, standardize all the variables WCGS.new dataset.
-D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop
 
+```{r}
+for (i in 1:ncol(WCGS.new)) {
+    WCGS.new[i] = standardize.me(unlist(WCGS.new[i]))
+}
+```
 
+D. What should the mean and standard deviation of all your new standardized variables be? Test your prediction by running a loop.
 
+The mean of all the new standardized variables should be 0 (or very close), and their standard deviations should be 1.
+
+```{r}
+mu_WCGS.new = c()
+
+for (i in 1:ncol(WCGS.new)) {
+  mu_WCGS.new[i] = mean(WCGS.new[[i]], na.rm = TRUE)
+}
+```
+
+```{r}
+sd_WCGS.new = c()
+
+for (i in 1:ncol(WCGS.new)) {
+  sd_WCGS.new[i] = sd(WCGS.new[[i]], na.rm = TRUE)
+}
+```
 
 ### Question 2: Looping to Calculate
 
 A. Using a loop, calculate the mean weight of the subjects separated by the type of CHD they have.
+
+```{r}
+weight.noCHD = c()
+weight.MI.SD = c()
+weight.silentMI = c()
+weight.angina = c()
+
+for (i in 1:nrow(wcgs)) {
+  if (wcgs$typchd69[[i]] == "no CHD") {
+    weight.noCHD[i] = wcgs$weight[[i]]
+  } else if (wcgs$typchd69[[i]] == "MI or SD") {
+    weight.MI.SD[i] = wcgs$weight[[i]]
+  } else if (wcgs$typchd69[[i]] == "silent MI") {
+    weight.silentMI[i] = wcgs$weight[[i]]
+  } else {
+    weight.angina[i] = wcgs$weight[[i]]
+  }
+}
+
+mean(weight.noCHD, na.rm = TRUE)
+mean(weight.MI.SD, na.rm = TRUE)
+mean(weight.silentMI, na.rm = TRUE)
+mean(weight.angina, na.rm = TRUE)
+
+```
+
 B. Now do the same thing, but now don’t use a loop
+
+```{r}
+library(dplyr)
+wcgs %>%
+  group_by(typchd69) %>%
+  summarise(mean.weight = mean(weight))
+```
 
